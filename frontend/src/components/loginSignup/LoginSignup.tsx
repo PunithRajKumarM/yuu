@@ -1,6 +1,6 @@
-import { Grid2 } from "@mui/material";
-import AppLogoPage from "./AppLogoPage";
-import LoginSignupForm from "./LoginSignupForm";
+import { Grid2 } from '@mui/material';
+import AppLogoPage from './AppLogoPage';
+import LoginSignupForm from './LoginSignupForm';
 
 // login signup component
 function LoginSignup() {
@@ -8,7 +8,7 @@ function LoginSignup() {
     <Grid2
       container
       sx={{
-        height: "100vh",
+        height: '100vh',
       }}
     >
       <LoginSignupForm />

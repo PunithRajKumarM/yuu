@@ -1,22 +1,20 @@
-import { createContext, ReactNode, useMemo, useState } from "react";
-import { IAuthenticationStatus } from "../interfaces/interfaces";
+import { createContext, ReactNode, useMemo, useState } from 'react';
+import { IAuthenticationContext } from '../interfaces/interfaces';
 
 // authentication context
-export const AuthenticationContext = createContext<IAuthenticationStatus>({
+export const AuthenticationContext = createContext<IAuthenticationContext>({
   isLoggedIn: false,
-  authType: "login",
+  authType: 'login',
   setAuthState: () => {},
 });
 
-function AuthenticationContextProvider({ children }: { children: ReactNode }) {
-  const [auth, setAuth] = useState<Omit<IAuthenticationStatus, "setAuthState">>(
-    {
-      isLoggedIn: false,
-      authType: "login",
-    }
-  );
+export default function AuthenticationContextProvider({ children }: { children: ReactNode }) {
+  const [auth, setAuth] = useState<Omit<IAuthenticationContext, 'setAuthState'>>({
+    isLoggedIn: false,
+    authType: 'login',
+  });
 
-  function updateAuthDetails(state: Partial<IAuthenticationStatus>) {
+  function updateAuthDetails(state: Partial<IAuthenticationContext>) {
     setAuth((pre) => ({
       ...pre,
       ...state,
@@ -32,11 +30,5 @@ function AuthenticationContextProvider({ children }: { children: ReactNode }) {
     [auth.isLoggedIn, auth.authType]
   );
 
-  return (
-    <AuthenticationContext.Provider value={value}>
-      {children}
-    </AuthenticationContext.Provider>
-  );
+  return <AuthenticationContext.Provider value={value}>{children}</AuthenticationContext.Provider>;
 }
-
-export default AuthenticationContextProvider;

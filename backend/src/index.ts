@@ -15,13 +15,22 @@ const main = async () => {
 
     const schema = await schemaData();
 
-    const server = new ApolloServer({ schema });
+    const server = new ApolloServer({
+      schema,
+      formatError: (err) => ({
+        message: err.message,
+        locations: err.locations,
+        path: err.path,
+      }),
+    });
     await server.start();
 
     const app = express();
-    server.applyMiddleware({ app, path: '/api/graphql/list' });
-
     app.use(cors());
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    server.applyMiddleware({ app, path: "/api/graphql/list" });
 
     app.listen(PORT, () => {
       console.log(`Server is running on the server ${PORT}`);

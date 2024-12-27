@@ -1,4 +1,4 @@
-import { TError, TState } from "../types/types";
+import { TError, TState } from '../types/types';
 
 // focus and update
 export const focusAndUpdateState = (

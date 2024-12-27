@@ -1,3 +1,5 @@
+import { TLoggedUserDataState, TToastType } from '../types/types';
+
 // interfaces
 export interface IExistingEmail {
   email: string;
@@ -33,8 +35,24 @@ export interface PasswordProps {
   helperText: string;
 }
 
-export interface IAuthenticationStatus {
+export interface IAuthenticationContext {
   isLoggedIn: boolean;
-  authType: "login" | "signup";
-  setAuthState: (state: Partial<IAuthenticationStatus>) => void;
+  authType: 'login' | 'signup';
+  setAuthState: (state: Partial<IAuthenticationContext>) => void;
+}
+
+export interface IToastContext {
+  toast: string;
+  toastType: TToastType;
+  updateToast: (message: string, type?: TToastType) => void;
+}
+
+export interface IJWTDecodedToken {
+  id: string;
+  uat: string;
+  exp: string;
+}
+
+export interface ILoggedUserData {
+  value: null | TLoggedUserDataState;
 }
