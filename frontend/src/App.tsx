@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Route, Routes } from 'react-router';
 import './App.css';
+import Chats from './components/dashboard/chats/Chats';
+import Dashboard from './components/dashboard/Dashboard';
+import Feed from './components/dashboard/feed/Feed';
+import Profile from './components/dashboard/profile/Profile';
+import Home from './components/home/Home';
+import AuthenticationContextProvider from './context/AuthenticationContext';
+import ToastContextProvider from './context/ToastContext';
 
+// app
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <AuthenticationContextProvider>
+        <ToastContextProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />}>
+                <Route path="dashboard" element={<Dashboard />}>
+                  <Route index element={<Feed />} />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="chats" element={<Chats />} />
+                </Route>
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </ToastContextProvider>
+      </AuthenticationContextProvider>
+    </>
   );
 }
 
