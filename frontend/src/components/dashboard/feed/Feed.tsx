@@ -1,59 +1,92 @@
-import { Box, FormControl, Grid2, OutlinedInput } from '@mui/material';
+import { Button, Grid2 } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { PostContext } from '../../../context/PostContext';
 import { getGreeting, nextUpdateTime } from '../../../helper/getGreeting';
-import { useEffect, useState } from 'react';
+import { RootState } from '../../../store/store';
+import Posts from '../posts/Posts';
 
 // feed
 function Feed() {
   const [greeting, setGreeting] = useState(getGreeting());
+  const loggedUserData = useSelector((state: RootState) => state.loggedUserData);
+  const navigate = useNavigate();
+  const { value } = loggedUserData;
+  const { setOpen } = useContext(PostContext);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       setGreeting(getGreeting());
     }, nextUpdateTime());
-
     return () => clearInterval(intervalId);
   }, [greeting]);
 
   return (
     <Grid2
+      container
+      spacing={2}
+      flexDirection={'column'}
       sx={{
         height: '100%',
-        backgroundColor: 'whitesmoke',
-        padding: '10px',
+        width: '100%',
+        color: 'var(--main-color)',
       }}
     >
-      <Box sx={{ backgroundColor: 'white', padding: '10px', borderRadius: '10px' }}>
-        <span>{`${greeting}, Punith`}</span>
-      </Box>
-      <Box
+      <Grid2
+        container
+        flexDirection={'column'}
+        spacing={2}
         sx={{
+          padding: '20px',
           backgroundColor: 'white',
-          padding: '10px',
           borderRadius: '10px',
-          marginTop: '10px',
         }}
       >
-        <FormControl
-          variant="outlined"
-          sx={{
-            backgroundColor: 'white',
-            borderRadius: '5px',
-            width: '40%',
+        <span
+          style={{
+            fontWeight: '500',
           }}
-        >
-          <OutlinedInput
-            id="component-outlined"
-            placeholder="What's in your mind?"
+        >{`${greeting}, ${value?.fullName}`}</span>
+        <Grid2 container alignItems={'center'} justifyContent={'center'}>
+          <span>Got something to share? Write it, snap it, or share it!</span>
+          <Button
             sx={{
-              height: '45px',
-              backgroundColor: 'white',
+              color: 'var(--main-color)',
+              borderColor: 'var(--main-color)',
+              fontWeight: '600',
             }}
-            inputProps={{
-              autoComplete: 'off', // Disable autofill suggestions
-            }}
-          />
-        </FormControl>
-      </Box>
+            size="small"
+            onClick={() => setOpen(true)}
+          >
+            <span>Create post</span>
+          </Button>
+        </Grid2>
+      </Grid2>
+      <Grid2
+        container
+        flexDirection={'column'}
+        spacing={3}
+        sx={{
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '10px',
+          alignItems: 'center',
+        }}
+      >
+        <span>Your feed looks empty! Start by connecting with others.</span>
+        <Button
+          sx={{
+            color: 'var(--main-color)',
+            borderColor: 'var(--main-color)',
+            fontWeight: '600',
+          }}
+          size="small"
+        >
+          <span>Find friends</span>
+        </Button>
+        <Posts />
+      </Grid2>
     </Grid2>
   );
 }

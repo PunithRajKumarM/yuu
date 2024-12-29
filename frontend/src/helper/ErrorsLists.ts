@@ -1,7 +1,5 @@
 // error list
 
-// error list
-
 export const ErrorsList = {
   EMAIL_REQUIRED: 'Email is required',
   PASSWORD_REQUIRED: 'Password is required',
@@ -19,4 +17,7 @@ export const ErrorsList = {
   PASSWORD_CONDITION:
     'Password must be at least 8 characters long and include: one letter, one number, and one special character. Spaces are not allowed',
   CURRENT_PASSWORD: 'Please ensure the new password is different from the current one.',
+  UNSUPPORTED_FORMAT: 'Unsupported format',
+  EMPTY_POST: `Post can't be empty`,
+  ONLY_IMAGE: `Can't accept other than image`,
 };

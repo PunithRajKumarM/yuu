@@ -2,15 +2,31 @@ import { Box, Grid2 } from '@mui/material';
 import { NavLink } from 'react-router';
 import Logo from '../../../assets/yuu-logo.png';
 import { linkData } from '../../../helper/linkData';
+import { ISetCommonStyle } from '../../../interfaces/interfaces';
+import React, { useContext } from 'react';
+import { PostContext } from '../../../context/PostContext';
 
 // side bar
 function SideBar() {
+  const { setOpen } = useContext(PostContext);
+  const setCommonStyle = (i: number, a: ISetCommonStyle[]) => {
+    return {
+      color: 'white',
+      textDecoration: 'none',
+      marginTop: i === a.length - 1 ? 'auto' : '10px',
+      paddingBottom: i === a.length - 1 ? '20px' : 0,
+      fontSize: 'large',
+      cursor: 'pointer',
+    };
+  };
   return (
     <Grid2
       sx={{
-        backgroundColor: '#2d3b60',
+        backgroundColor: 'var(--main-color)',
         width: '20%',
         height: '100vh',
+        position: 'sticky',
+        top: 0,
       }}
     >
       <Box
@@ -26,8 +42,8 @@ function SideBar() {
           src={Logo}
           alt="Logo"
           style={{
-            maxWidth: '200px',
-            width: '100px',
+            maxWidth: '220px',
+            width: '120px',
           }}
         />
         <Box
@@ -39,21 +55,22 @@ function SideBar() {
             flexGrow: 1,
           }}
         >
-          {linkData.map((d, i, a) => (
-            <NavLink
-              key={i}
-              style={{
-                color: 'white',
-                textDecoration: 'none',
-                marginTop: i === a.length - 1 ? 'auto' : '10px',
-                paddingBottom: i === a.length - 1 ? '20px' : 0,
-              }}
-              to={d.link}
-              end
-            >
-              <span>{d.label}</span>
-            </NavLink>
-          ))}
+          {linkData.map((d, i, a) => {
+            const { label, link, post } = d;
+            return (
+              <React.Fragment key={i}>
+                {post ? (
+                  <span onClick={() => setOpen(true)} style={setCommonStyle(i, a)}>
+                    {label}
+                  </span>
+                ) : (
+                  <NavLink key={i} style={setCommonStyle(i, a)} to={link} end>
+                    <span>{label}</span>
+                  </NavLink>
+                )}
+              </React.Fragment>
+            );
+          })}
         </Box>
       </Box>
     </Grid2>

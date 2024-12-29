@@ -22,3 +22,16 @@ export class LoginInputType {
   @Field()
   password: string;
 }
+
+@InputType()
+@ObjectType()
+export class PostInputType {
+  @Field()
+  id: string;
+
+  @Field({ nullable: true })
+  text: string;
+
+  @Field({ nullable: true })
+  image: string;
+}

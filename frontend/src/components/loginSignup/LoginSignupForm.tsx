@@ -1,20 +1,19 @@
 import { useMutation } from '@apollo/client';
 import { Box, Button, Grid2, Typography } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AuthenticationContext } from '../../context/AuthenticationContext';
 import { ErrorsList } from '../../helper/ErrorsLists';
 import { focusAndUpdateError, focusAndUpdateState } from '../../helper/focusAndUpdate';
 import { isValidEmail } from '../../helper/isValidEmail';
+import { setEncodedAccessTokenToLocal, setEncodedRefreshTokenToLocal } from '../../helper/storage';
 import { updateState } from '../../helper/updateState';
 import { validatePassword } from '../../helper/validatePassword';
 import { RESET_PASSWORD, SAVE_USER } from '../../queries/queries';
 import EmailField from './emailField/EmailField';
 import NameField from './nameField/NameField';
 import PasswordField from './passwordField/PasswordField';
-import Toast from '../toast/Toast';
-import { ToastContext } from '../../context/ToastContext';
-import { setEncodedAccessTokenToLocal, setEncodedRefreshTokenToLocal } from '../../helper/storage';
 
 // login signup form
 function LoginSignupForm() {
@@ -49,7 +48,6 @@ function LoginSignupForm() {
   });
   const [forgotPassword, setForgotPassword] = useState(false);
   const { authType, setAuthState } = useContext(AuthenticationContext);
-  const { toast, updateToast } = useContext(ToastContext);
 
   const authTypeName = authType === 'login' ? 'Login' : 'Signup';
   const emailRef = useRef<HTMLInputElement | null>(null);
@@ -78,17 +76,28 @@ function LoginSignupForm() {
 
   const [saveUser] = useMutation(SAVE_USER, {
     onCompleted: ({ save_user }) => {
-      console.log(save_user);
       const { message, accessToken, refreshToken } = save_user;
       setEncodedAccessTokenToLocal(accessToken);
       setEncodedRefreshTokenToLocal(refreshToken);
-      updateToast(message, 'success');
+      enqueueSnackbar(message, { variant: 'success' });
       resetStates();
       setAuthState({ authType: 'login', isLoggedIn: true });
       navigate('/dashboard');
     },
+    onError: ({ message }) => {
+      enqueueSnackbar(message, { variant: 'error' });
+    },
   });
-  const [resetPassword] = useMutation(RESET_PASSWORD);
+  const [resetPassword] = useMutation(RESET_PASSWORD, {
+    onCompleted: ({ reset_password }) => {
+      const { message } = reset_password;
+      enqueueSnackbar(message, { variant: 'success' });
+      navigate('/');
+    },
+    onError: ({ message }) => {
+      enqueueSnackbar(message, { variant: 'success' });
+    },
+  });
 
   const resetStates = () => {
     setEmailState(clearState);
@@ -102,14 +111,6 @@ function LoginSignupForm() {
       confirmPassword: false,
     });
   };
-
-  useEffect(() => {
-    if (toast) {
-      setTimeout(() => {
-        updateToast('');
-      }, 3000);
-    }
-  }, [toast]);
 
   // reset state value
   useEffect(() => {
@@ -315,7 +316,7 @@ function LoginSignupForm() {
       .then((data) => {
         const { reset_password } = data?.data;
         const { message } = reset_password;
-        updateToast(message, 'success');
+        enqueueSnackbar(message, { variant: 'success' });
         resetStates();
         setForgotPassword(false);
       })
@@ -326,160 +327,160 @@ function LoginSignupForm() {
   };
 
   return (
-    <>
-      {toast && <Toast />}
-      <Grid2
-        size={{ xs: 12, lg: 6 }}
+    <Grid2
+      size={{ xs: 12, lg: 6 }}
+      sx={{
+        background: '#f5f5f5',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        order: { xs: 2, lg: 0 },
+        height: { xs: '70%', lg: '100%' },
+      }}
+    >
+      <Box
         sx={{
-          background: '#f5f5f5',
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          order: { xs: 2, lg: 0 },
-          height: { xs: '70%', lg: '100%' },
+          gap: '10px',
+          width: { xs: '70%', lg: '45%' },
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '10px',
-            width: { xs: '70%', lg: '45%' },
-          }}
-        >
-          <h1 style={{ color: '#2d3b60' }}> {forgotPassword ? 'Reset password' : authTypeName}</h1>
-          <EmailField
-            email={emailState.value}
-            inputRef={emailRef}
-            setEmail={setEmailState}
-            error={emailState.error}
-            helperText={emailState.helperText}
-            emailOnBlurHandler={emailOnBlurHandler}
+        <h1 style={{ color: 'var(--main-color)' }}>
+          {' '}
+          {forgotPassword ? 'Reset password' : authTypeName}
+        </h1>
+        <EmailField
+          email={emailState.value}
+          inputRef={emailRef}
+          setEmail={setEmailState}
+          error={emailState.error}
+          helperText={emailState.helperText}
+          emailOnBlurHandler={emailOnBlurHandler}
+        />
+        {authType === 'signup' && (
+          <NameField
+            value={fullNameState.value}
+            error={fullNameState.error}
+            setName={fullNameHandler}
+            inputRef={fullNameRef}
+            helperText={fullNameState.helperText}
+            label="Full name"
+            placeholder="Enter your full name"
           />
-          {authType === 'signup' && (
-            <NameField
-              value={fullNameState.value}
-              error={fullNameState.error}
-              setName={fullNameHandler}
-              inputRef={fullNameRef}
-              helperText={fullNameState.helperText}
-              label="Full name"
-              placeholder="Enter your full name"
-            />
-          )}
-          {authType === 'signup' && (
-            <NameField
-              value={userNameState.value}
-              error={userNameState.error}
-              setName={userNameHandler}
-              inputRef={userNameRef}
-              helperText={userNameState.helperText}
-              label="User name"
-              placeholder="Create user name"
-            />
-          )}
+        )}
+        {authType === 'signup' && (
+          <NameField
+            value={userNameState.value}
+            error={userNameState.error}
+            setName={userNameHandler}
+            inputRef={userNameRef}
+            helperText={userNameState.helperText}
+            label="User name"
+            placeholder="Create user name"
+          />
+        )}
+        <PasswordField
+          value={passwordState.value}
+          passwordHandler={passwordHandler}
+          showPassword={showPassword.password}
+          setShowPassword={showPasswordHandler}
+          label={forgotPassword ? 'New password' : 'Password'}
+          inputRef={passwordRef}
+          error={passwordState.error}
+          helperText={passwordState.helperText}
+          passwordOnBlurHandler={passwordOnBlurHandler}
+        />
+        {(authType === 'signup' || forgotPassword) && (
           <PasswordField
-            value={passwordState.value}
-            passwordHandler={passwordHandler}
-            showPassword={showPassword.password}
-            setShowPassword={showPasswordHandler}
-            label={forgotPassword ? 'New password' : 'Password'}
-            inputRef={passwordRef}
-            error={passwordState.error}
-            helperText={passwordState.helperText}
-            passwordOnBlurHandler={passwordOnBlurHandler}
+            value={confirmPasswordState.value}
+            passwordHandler={confirmPasswordHandler}
+            showPassword={showPassword.confirmPassword}
+            setShowPassword={showConfirmPasswordHandler}
+            label={'Confirm password'}
+            inputRef={confirmPasswordRef}
+            error={confirmPasswordState.error}
+            helperText={confirmPasswordState.helperText}
+            passwordOnBlurHandler={confirmPasswordOnBlurHandler}
           />
-          {(authType === 'signup' || forgotPassword) && (
-            <PasswordField
-              value={confirmPasswordState.value}
-              passwordHandler={confirmPasswordHandler}
-              showPassword={showPassword.confirmPassword}
-              setShowPassword={showConfirmPasswordHandler}
-              label={'Confirm password'}
-              inputRef={confirmPasswordRef}
-              error={confirmPasswordState.error}
-              helperText={confirmPasswordState.helperText}
-              passwordOnBlurHandler={confirmPasswordOnBlurHandler}
-            />
-          )}
-          {error.status && (
-            <Box
-              sx={{
-                color: '#ff0000',
-                margin: '3px 14px 0px',
-              }}
-            >
-              {error.message}
-            </Box>
-          )}
-          {!forgotPassword && authType === 'login' && (
-            <Typography
-              sx={{
-                cursor: 'pointer',
-                color: '#2d3b60',
-                ':hover': { color: '#576cbd' },
-              }}
-              onClick={() => setForgotPassword(true)}
-            >
-              Forgot your password?
-            </Typography>
-          )}
-          <Button
-            onClick={forgotPassword ? forgotPasswordHandler : LoginSignupSubmitHandler}
-            variant="contained"
-            sx={{ width: '100%', backgroundColor: '#2d3b60' }}
+        )}
+        {error.status && (
+          <Box
+            sx={{
+              color: '#ff0000',
+              margin: '3px 14px 0px',
+            }}
           >
-            {forgotPassword ? 'Reset Password' : authTypeName}
-          </Button>
-          {!forgotPassword &&
-            (authType === 'login' ? (
-              <Typography>
-                Don&apos;t have an account?{' '}
-                <Box
-                  component="span"
-                  sx={{
-                    color: '#2d3b60',
-                    cursor: 'pointer',
-                    ':hover': { color: '#576cbd' },
-                  }}
-                  onClick={() => setAuthState({ authType: 'signup' })}
-                >
-                  Signup
-                </Box>
-              </Typography>
-            ) : (
-              <Typography>
-                Already an user?{' '}
-                <Box
-                  component="span"
-                  sx={{
-                    color: '#2d3b60',
-                    cursor: 'pointer',
-                    ':hover': { color: '#576cbd' },
-                  }}
-                  onClick={() => setAuthState({ authType: 'login' })}
-                >
-                  Login
-                </Box>
-              </Typography>
-            ))}
-          {forgotPassword && (
-            <Typography
-              sx={{
-                cursor: 'pointer',
-                color: '#2d3b60',
-                ':hover': { color: '#576cbd' },
-              }}
-              onClick={() => setForgotPassword(false)}
-            >
-              Back
+            {error.message}
+          </Box>
+        )}
+        {!forgotPassword && authType === 'login' && (
+          <Typography
+            sx={{
+              cursor: 'pointer',
+              color: 'var(--main-color)',
+              ':hover': { color: '#576cbd' },
+            }}
+            onClick={() => setForgotPassword(true)}
+          >
+            Forgot your password?
+          </Typography>
+        )}
+        <Button
+          onClick={forgotPassword ? forgotPasswordHandler : LoginSignupSubmitHandler}
+          variant="contained"
+          sx={{ width: '100%', backgroundColor: 'var(--main-color)' }}
+        >
+          {forgotPassword ? 'Reset Password' : authTypeName}
+        </Button>
+        {!forgotPassword &&
+          (authType === 'login' ? (
+            <Typography>
+              Don&apos;t have an account?{' '}
+              <Box
+                component="span"
+                sx={{
+                  color: 'var(--main-color)',
+                  cursor: 'pointer',
+                  ':hover': { color: '#576cbd' },
+                }}
+                onClick={() => setAuthState({ authType: 'signup' })}
+              >
+                Signup
+              </Box>
             </Typography>
-          )}
-        </Box>
-      </Grid2>
-    </>
+          ) : (
+            <Typography>
+              Already an user?{' '}
+              <Box
+                component="span"
+                sx={{
+                  color: 'var(--main-color)',
+                  cursor: 'pointer',
+                  ':hover': { color: '#576cbd' },
+                }}
+                onClick={() => setAuthState({ authType: 'login' })}
+              >
+                Login
+              </Box>
+            </Typography>
+          ))}
+        {forgotPassword && (
+          <Typography
+            sx={{
+              cursor: 'pointer',
+              color: 'var(--main-color)',
+              ':hover': { color: '#576cbd' },
+            }}
+            onClick={() => setForgotPassword(false)}
+          >
+            Back
+          </Typography>
+        )}
+      </Box>
+    </Grid2>
   );
 }
 

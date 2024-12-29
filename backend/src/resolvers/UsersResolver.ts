@@ -7,7 +7,7 @@ import { LoginInputType, UserInputType } from "../inputTypes/inputTypes";
 import {
   GetUserResponse,
   LoginResponse,
-  ResetPasswordResponse,
+  DefaultResponse,
   SaveUserResponse,
 } from "../objectTypes/objectTypes";
 const bcrypt = require("bcrypt");
@@ -92,7 +92,7 @@ export class UsersResolver {
     }
   }
 
-  @Mutation(() => ResetPasswordResponse)
+  @Mutation(() => DefaultResponse)
   // reset password
   async reset_password(@Arg("data") data: LoginInputType) {
     const { email, password } = data;

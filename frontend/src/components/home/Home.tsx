@@ -1,14 +1,16 @@
 import { useQuery } from '@apollo/client';
-import { jwtDecode } from 'jwt-decode';
+import { Backdrop, CircularProgress } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router';
 import { AuthenticationContext } from '../../context/AuthenticationContext';
+import { getLoggedUserId } from '../../helper/getLoggedUserId';
 import { getDecodedAccessTokenToLocal } from '../../helper/storage';
-import { IJWTDecodedToken } from '../../interfaces/interfaces';
 import { GET_USER } from '../../queries/queries';
 import { addLoggedUserData } from '../../store/reducers/loggedUserDataSlice';
 import { TGetUser } from '../../types/types';
+import CreatePost from '../dashboard/createPost/CreatePost';
 import LoginSignup from '../loginSignup/LoginSignup';
 
 // home component
@@ -16,24 +18,34 @@ function Home() {
   const { isLoggedIn } = useContext(AuthenticationContext);
   const isAuthenticated = getDecodedAccessTokenToLocal();
   const navigate = useNavigate();
-  const accessToken = getDecodedAccessTokenToLocal();
-  const decodedToken: IJWTDecodedToken = jwtDecode(accessToken);
-  const userId = decodedToken.id;
+  const userId = getLoggedUserId();
+
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    } else {
-      navigate('/');
-    }
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     navigate('/dashboard');
+  //   } else {
+  //     navigate('/');
+  //   }
+  // }, [isAuthenticated]);
 
-  const { data: loggedUserData } = useQuery(GET_USER, {
+  const {
+    data: loggedUserData,
+    loading: loggedUserDataLoading,
+    error: loggedUserDataError,
+  } = useQuery(GET_USER, {
     variables: { id: userId },
     skip: !userId,
     fetchPolicy: 'cache-first',
   });
+
+  useEffect(() => {
+    if (loggedUserDataError) {
+      const { message } = loggedUserDataError;
+      enqueueSnackbar(message, { variant: 'error' });
+    }
+  }, [loggedUserDataError]);
 
   useEffect(() => {
     if (loggedUserData as TGetUser) {
@@ -50,6 +62,15 @@ function Home() {
 
   return (
     <>
+      {<CreatePost />}
+      {loggedUserDataLoading && (
+        <Backdrop
+          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+          open={loggedUserDataLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
       {!isLoggedIn && !isAuthenticated && <LoginSignup />}
       {isAuthenticated && <Outlet />}
     </>

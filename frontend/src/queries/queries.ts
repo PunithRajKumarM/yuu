@@ -43,3 +43,11 @@ export const GET_USER = gql`
     }
   }
 `;
+
+export const SAVE_POST = gql`
+  mutation savePost($id: String!, $text: String, $image: String) {
+    save_post(post: { id: $id, text: $text, image: $image }) {
+      message
+    }
+  }
+`;

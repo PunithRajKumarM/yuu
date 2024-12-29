@@ -29,7 +29,7 @@ export class LoginResponse {
 }
 
 @ObjectType()
-export class ResetPasswordResponse {
+export class DefaultResponse {
   @Field()
   message: string;
 }

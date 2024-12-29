@@ -1,46 +1,34 @@
-import { Grid2 } from '@mui/material';
+import { Box, Grid2 } from '@mui/material';
 import { Outlet } from 'react-router';
 import './Dashboard.css';
 import SideBar from './sideBar/SideBar';
-import Toast from '../toast/Toast';
-import { useContext } from 'react';
-import { ToastContext } from '../../context/ToastContext';
 
 // dashboard
 function Dashboard() {
-  const { toast } = useContext(ToastContext);
   return (
-    <>
-      {toast && <Toast />}
+    <Grid2 container>
+      <SideBar />
       <Grid2
+        container
         sx={{
           display: 'flex',
-          flexWrap: 'wrap',
-          width: '100vw',
+          flexDirection: 'column',
+          flex: 1,
         }}
       >
-        <SideBar />
-        <Grid2
+        <Box
+          className={'hideScrollbar'}
           sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            flexDirection: 'column',
+            overflowY: 'scroll',
             flex: 1,
+            backgroundColor: 'whitesmoke',
+            padding: '10px',
           }}
         >
-          <Grid2
-            className={'hideScrollbar'}
-            sx={{
-              height: 'auto',
-              overflowY: 'scroll',
-              flex: 1,
-            }}
-          >
-            <Outlet />
-          </Grid2>
-        </Grid2>
+          <Outlet />
+        </Box>
       </Grid2>
-    </>
+    </Grid2>
   );
 }
 

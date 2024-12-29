@@ -20,4 +20,5 @@ export const ErrorsList = {
     "Please ensure the new password is different from the current one.",
   FAILED_SAVING_USER: "Failed to save user",
   USER_NOT_FOUND: "User not found",
+  FAILED_TO_STORE_POST: "Failed to store post in the database",
 };

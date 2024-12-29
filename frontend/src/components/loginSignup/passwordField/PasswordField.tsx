@@ -26,9 +26,9 @@ function PasswordField({
       <InputLabel
         htmlFor="password"
         sx={{
-          color: error ? 'red' : '#2d3b60', // Normal state label color
+          color: error ? 'red' : 'var(--main-color)', // Normal state label color
           '&.Mui-focused': {
-            color: error ? 'red' : '#2d3b60', // Focus state label color
+            color: error ? 'red' : 'var(--main-color)', // Focus state label color
           },
         }}
       >
@@ -52,20 +52,20 @@ function PasswordField({
         label={label}
         sx={{
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: error ? 'red' : '#2d3b60', // Normal state border color
+            borderColor: error ? 'red' : 'var(--main-color)', // Normal state border color
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: error ? 'red' : '#2d3b60', // Hover state border color
+            borderColor: error ? 'red' : 'var(--main-color)', // Hover state border color
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: error ? 'red' : '#2d3b60', // Focus state border color
+            borderColor: error ? 'red' : 'var(--main-color)', // Focus state border color
           },
         }}
       ></OutlinedInput>
       {helperText && (
         <FormHelperText
           sx={{
-            color: error ? 'red' : '#2d3b60',
+            color: error ? 'red' : 'var(--main-color)',
           }}
         >
           {helperText}
