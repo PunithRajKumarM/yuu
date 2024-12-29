@@ -12,12 +12,13 @@ export const linkData = [
     link: 'chats',
   },
   {
-    label: 'Create',
-    link: '',
-  },
-  {
     label: 'Profile',
     link: 'profile',
+  },
+  {
+    label: 'Create post',
+    link: '',
+    post: true,
   },
   {
     label: 'Settings',

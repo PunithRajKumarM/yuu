@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useMemo, useState } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { IToastContext } from '../interfaces/interfaces';
 import { TToastType } from '../types/types';
 
@@ -11,6 +11,14 @@ export const ToastContext = createContext<IToastContext>({
 export default function ToastContextProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState<string>('');
   const [toastType, setToastType] = useState<TToastType>('success');
+
+  useEffect(() => {
+    if (toast) {
+      setTimeout(() => {
+        updateToast('');
+      }, 3000);
+    }
+  }, [toast]);
 
   const updateToast = (message: string, type?: TToastType) => {
     setToast(message);

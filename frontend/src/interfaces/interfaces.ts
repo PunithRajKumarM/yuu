@@ -56,3 +56,14 @@ export interface IJWTDecodedToken {
 export interface ILoggedUserData {
   value: null | TLoggedUserDataState;
 }
+
+export interface IPostContext {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface ISetCommonStyle {
+  label: string;
+  link: string;
+  post?: boolean;
+}

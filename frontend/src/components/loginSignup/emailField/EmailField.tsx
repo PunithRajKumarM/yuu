@@ -32,20 +32,20 @@ function EmailField({
           width: '100%',
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: error ? 'red' : '#2d3b60', // Normal state border color
+              borderColor: error ? 'red' : 'var(--main-color)', // Normal state border color
             },
             '&:hover fieldset': {
-              borderColor: error ? 'red' : '#2d3b60', // Hover state border color
+              borderColor: error ? 'red' : 'var(--main-color)', // Hover state border color
             },
             '&.Mui-focused fieldset': {
-              borderColor: error ? 'red' : '#2d3b60', // Focus state border color
+              borderColor: error ? 'red' : 'var(--main-color)', // Focus state border color
             },
           },
           '& .MuiInputLabel-root': {
-            color: error ? 'red' : '#2d3b60', // Normal state label color
+            color: error ? 'red' : 'var(--main-color)', // Normal state label color
           },
           '& .MuiInputLabel-root.Mui-focused': {
-            color: error ? 'red' : '#2d3b60', // Focus state label color
+            color: error ? 'red' : 'var(--main-color)', // Focus state label color
           },
         }}
       />

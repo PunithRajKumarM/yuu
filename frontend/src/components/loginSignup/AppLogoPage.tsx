@@ -7,7 +7,7 @@ function AppLogoPage() {
     <Grid2
       size={{ xs: 12, md: 12, lg: 6 }}
       sx={{
-        backgroundColor: '#2d3b60',
+        backgroundColor: 'var(--main-color)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

@@ -19,7 +19,7 @@ function Navbar() {
         right: 0,
         position: 'sticky',
         padding: '20px',
-        background: '#2d3b60',
+        background: 'var(--main-color)',
         width: '100%',
         display: 'flex',
         flexWrap: 'wrap',

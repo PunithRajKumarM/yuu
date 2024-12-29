@@ -1,13 +1,17 @@
-import { Field, ID, InputType, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { UserToken } from "./UserToken";
+import { Posts } from "./Posts";
+import { Likes } from "./Likes";
+import { Comments } from "./Comments";
 
 @ObjectType()
 @Entity()
@@ -41,6 +45,21 @@ export class Users {
     cascade: true,
   })
   token: UserToken;
+
+  @Field(() => [Posts], { nullable: true })
+  @OneToMany(() => Posts, (post) => post.user, {
+    eager: true,
+    cascade: true,
+  })
+  posts: Posts[];
+
+  @Field(() => [Likes], { nullable: true })
+  @OneToMany(() => Likes, (like) => like.user)
+  likes: Likes[];
+
+  @Field(() => [Comments])
+  @OneToMany(() => Comments, (comment) => comment.user)
+  comments: Comments[];
 
   @Field()
   @CreateDateColumn({
