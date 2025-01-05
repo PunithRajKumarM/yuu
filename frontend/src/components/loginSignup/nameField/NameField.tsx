@@ -29,7 +29,7 @@ function NameField({
       <TextField
         id="standard-basic"
         variant="outlined"
-        value={value}
+        value={label === 'User name' ? value.trim() : value}
         onBlur={nameOnBlurHandler}
         type="text"
         sx={{

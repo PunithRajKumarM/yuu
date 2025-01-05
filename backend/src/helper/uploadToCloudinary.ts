@@ -4,7 +4,6 @@ export const uploadToCloudinary = async (image: string) => {
   const cloudName = process.env.CLOUD_NAME;
   const cloudApiKey = process.env.CLOUD_API_KEY;
   const cloudApiSecretKey = process.env.CLOUD_API_SECRET_KEY;
-  console.log(cloudName, cloudApiKey, cloudApiSecretKey);
 
   cloudinary.config({
     cloud_name: cloudName,

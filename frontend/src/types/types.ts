@@ -1,3 +1,4 @@
+import { ApolloQueryResult, OperationVariables } from '@apollo/client';
 import { IExistingEmail } from '../interfaces/interfaces';
 
 // types
@@ -24,6 +25,7 @@ export type TLoggedUserDataState = {
   email: string;
   fullName: string;
   userName: string;
+  profilePicture: string | null;
 };
 
 export type TGetUser = {
@@ -32,3 +34,41 @@ export type TGetUser = {
     user: TLoggedUserDataState;
   };
 };
+
+export type TUsersPosts = {
+  id: string;
+  fullName: string;
+  userName: string;
+  profilePicture: string;
+  posts: {
+    id: string;
+    link: string;
+    text: string;
+    createdAt: string;
+    likes: {
+      id: string;
+      user: {
+        id: string;
+      };
+    }[];
+    comments: {
+      id: string;
+      comment: string;
+      user: {
+        id: string;
+      };
+    }[];
+  }[];
+};
+
+export type TGetUsersPosts = {
+  get_users_posts: TUsersPosts[];
+};
+
+export type TIDArray = string[];
+
+export type TRefetch = (
+  variables?: Partial<OperationVariables> | undefined
+) => Promise<ApolloQueryResult<any>>;
+
+export type TSelectImage = React.Dispatch<React.SetStateAction<string | ArrayBuffer | null>>;

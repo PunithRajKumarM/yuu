@@ -29,7 +29,7 @@ export class Posts {
   user: Users;
 
   @Field(() => String, { nullable: true })
-  @Column("text")
+  @Column("text", { default: "" })
   text: string;
 
   @Field(() => String, { nullable: true })
@@ -48,13 +48,19 @@ export class Posts {
     eager: true,
     cascade: true,
   })
-  comments: Likes[];
+  comments: Comments[];
 
   @Field()
-  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn({
+    type: "timestamp without time zone",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt: string;
 
   @Field()
-  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn({
+    type: "timestamp without time zone",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   updatedAt: string;
 }

@@ -1,31 +1,19 @@
 import { Field, ObjectType } from "type-graphql";
 import { Users } from "../entities/Users";
+import { Posts } from "../entities/Posts";
+import { UserRelationships } from "../entities/UserRelationship";
 
 // objectTypes
 @ObjectType()
-export class SaveUserResponse {
-  @Field()
+export class DefaultUserResponse {
+  @Field(() => String)
   message: string;
 
-  @Field()
+  @Field(() => String)
   accessToken: string;
 
-  @Field()
+  @Field(() => String)
   refreshToken: string;
-}
-
-@ObjectType()
-export class LoginResponse {
-  @Field()
-  message: string;
-
-  @Field()
-  accessToken: string;
-  @Field()
-  refreshToken: string;
-
-  @Field()
-  data: Users;
 }
 
 @ObjectType()
@@ -41,4 +29,18 @@ export class GetUserResponse {
 
   @Field(() => Users)
   user: Users;
+}
+
+@ObjectType()
+export class GetUsersPostsResponse {
+  @Field(() => [Users])
+  users: Users[];
+}
+
+@ObjectType()
+export class GetUserRelationshipsResponse {
+  @Field(() => [UserRelationships])
+  followers: UserRelationships[];
+  @Field(() => [UserRelationships])
+  followings: UserRelationships[];
 }

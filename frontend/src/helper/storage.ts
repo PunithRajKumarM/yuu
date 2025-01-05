@@ -23,3 +23,8 @@ export function getDecodedAccessTokenToLocal() {
 export function getDecodedRefreshTokenToLocal() {
   return decodeToken(localStorage.getItem('refreshToken') || '');
 }
+
+export function clearToken() {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+}

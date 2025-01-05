@@ -21,4 +21,5 @@ export const ErrorsList = {
   FAILED_SAVING_USER: "Failed to save user",
   USER_NOT_FOUND: "User not found",
   FAILED_TO_STORE_POST: "Failed to store post in the database",
+  POST_NOT_FOUND: "Post not found",
 };

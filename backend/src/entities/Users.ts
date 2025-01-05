@@ -12,6 +12,7 @@ import { UserToken } from "./UserToken";
 import { Posts } from "./Posts";
 import { Likes } from "./Likes";
 import { Comments } from "./Comments";
+import { UserRelationships } from "./UserRelationship";
 
 @ObjectType()
 @Entity()
@@ -32,12 +33,16 @@ export class Users {
   @Column("text")
   fullName: string;
 
-  @Column("text", { select: false })
+  @Column("text")
   password: string;
 
   @Field(() => Boolean)
   @Column("boolean", { default: false })
   isOnline: boolean;
+
+  @Field(() => String, { nullable: true })
+  @Column("text", { default: null })
+  profilePicture: string | null;
 
   @Field(() => UserToken, { nullable: true })
   @OneToOne(() => UserToken, (token) => token.user, {
@@ -60,6 +65,14 @@ export class Users {
   @Field(() => [Comments])
   @OneToMany(() => Comments, (comment) => comment.user)
   comments: Comments[];
+
+  @Field(() => [UserRelationships])
+  @OneToMany(() => UserRelationships, (relationship) => relationship.follower)
+  followers: UserRelationships[];
+
+  @Field(() => [UserRelationships])
+  @OneToMany(() => UserRelationships, (relationship) => relationship.following)
+  followings: UserRelationships[];
 
   @Field()
   @CreateDateColumn({

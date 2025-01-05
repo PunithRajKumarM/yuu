@@ -37,7 +37,7 @@ function PasswordField({
       <OutlinedInput
         id="password"
         type={showPassword ? 'text' : 'password'}
-        value={value}
+        value={value.trim()}
         onChange={(e) => passwordHandler(e.target.value)}
         onBlur={passwordOnBlurHandler}
         inputRef={inputRef}

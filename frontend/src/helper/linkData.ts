@@ -5,7 +5,7 @@ export const linkData = [
   },
   {
     label: 'Search',
-    link: '',
+    link: 'search',
   },
   {
     label: 'Chat',

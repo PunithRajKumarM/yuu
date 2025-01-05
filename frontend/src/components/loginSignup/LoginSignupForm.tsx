@@ -10,7 +10,7 @@ import { isValidEmail } from '../../helper/isValidEmail';
 import { setEncodedAccessTokenToLocal, setEncodedRefreshTokenToLocal } from '../../helper/storage';
 import { updateState } from '../../helper/updateState';
 import { validatePassword } from '../../helper/validatePassword';
-import { RESET_PASSWORD, SAVE_USER } from '../../queries/queries';
+import { LOGIN, RESET_PASSWORD, SAVE_USER } from '../../queries/queries';
 import EmailField from './emailField/EmailField';
 import NameField from './nameField/NameField';
 import PasswordField from './passwordField/PasswordField';
@@ -74,20 +74,35 @@ function LoginSignupForm() {
   const isEmailValid = isValidEmail(emailState.value);
   const isPasswordValid = validatePassword(password);
 
+  const loginHandler = (message: string, accessToken: string, refreshToken: string) => {
+    setEncodedAccessTokenToLocal(accessToken);
+    setEncodedRefreshTokenToLocal(refreshToken);
+    enqueueSnackbar(message, { variant: 'success' });
+    resetStates();
+    setAuthState({ authType: 'login', isLoggedIn: true });
+    navigate('/dashboard');
+  };
+
   const [saveUser] = useMutation(SAVE_USER, {
     onCompleted: ({ save_user }) => {
       const { message, accessToken, refreshToken } = save_user;
-      setEncodedAccessTokenToLocal(accessToken);
-      setEncodedRefreshTokenToLocal(refreshToken);
-      enqueueSnackbar(message, { variant: 'success' });
-      resetStates();
-      setAuthState({ authType: 'login', isLoggedIn: true });
-      navigate('/dashboard');
+      loginHandler(message, accessToken, refreshToken);
     },
     onError: ({ message }) => {
       enqueueSnackbar(message, { variant: 'error' });
     },
   });
+
+  const [login] = useMutation(LOGIN, {
+    onCompleted: ({ login }) => {
+      const { message, accessToken, refreshToken } = login;
+      loginHandler(message, accessToken, refreshToken);
+    },
+    onError: ({ message }) => {
+      enqueueSnackbar(message, { variant: 'error' });
+    },
+  });
+
   const [resetPassword] = useMutation(RESET_PASSWORD, {
     onCompleted: ({ reset_password }) => {
       const { message } = reset_password;
@@ -95,7 +110,7 @@ function LoginSignupForm() {
       navigate('/');
     },
     onError: ({ message }) => {
-      enqueueSnackbar(message, { variant: 'success' });
+      enqueueSnackbar(message, { variant: 'error' });
     },
   });
 
@@ -231,6 +246,12 @@ function LoginSignupForm() {
         return;
       }
 
+      login({
+        variables: {
+          email,
+          password,
+        },
+      });
       return;
     }
     if (authType === 'signup') {
@@ -428,7 +449,9 @@ function LoginSignupForm() {
             Forgot your password?
           </Typography>
         )}
+
         <Button
+          type="submit"
           onClick={forgotPassword ? forgotPasswordHandler : LoginSignupSubmitHandler}
           variant="contained"
           sx={{ width: '100%', backgroundColor: 'var(--main-color)' }}

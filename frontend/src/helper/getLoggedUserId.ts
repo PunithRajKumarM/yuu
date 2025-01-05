@@ -5,6 +5,7 @@ import { IJWTDecodedToken } from '../interfaces/interfaces';
 // get logged user ID
 export const getLoggedUserId = () => {
   const accessToken = getDecodedAccessTokenToLocal();
+  if (!accessToken) return null;
   const decodedToken: IJWTDecodedToken = jwtDecode(accessToken);
 
   const userId = decodedToken.id;

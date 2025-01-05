@@ -1,4 +1,4 @@
-import { TLoggedUserDataState, TToastType } from '../types/types';
+import { TIDArray, TLoggedUserDataState, TToastType, TUsersPosts } from '../types/types';
 
 // interfaces
 export interface IExistingEmail {
@@ -66,4 +66,47 @@ export interface ISetCommonStyle {
   label: string;
   link: string;
   post?: boolean;
+}
+
+export interface IPostDataContext {
+  text?: string;
+  link?: string;
+  createdAt: string;
+}
+
+export interface IUserPostDataSlice {
+  value: null | TUsersPosts[];
+}
+
+export interface IUserData {
+  id: string;
+  email: string;
+  fullName: string;
+  userName: string;
+  profilePicture: null | string;
+}
+
+export interface TUserDataSlice {
+  value: null | IUserData[];
+}
+
+export interface IGetUsers {
+  get_users: IUserData[];
+}
+
+export interface IUserRelationshipStateSlice {
+  followers: TIDArray;
+  followings: TIDArray;
+}
+
+export interface IFollowers {
+  follower: {
+    id: string;
+  };
+}
+
+export interface IFollowings {
+  following: {
+    id: string;
+  };
 }

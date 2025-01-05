@@ -8,26 +8,33 @@ import Profile from './components/dashboard/profile/Profile';
 import Home from './components/home/Home';
 import AuthenticationContextProvider from './context/AuthenticationContext';
 import PostContextProvider from './context/PostContext';
+import LoaderContextProvider from './context/LoaderContext';
+import Search from './components/search/Search';
+import Settings from './components/settings/Settings';
 
 // app
 function App() {
   return (
     <>
-      <SnackbarProvider maxSnack={3}>
+      <SnackbarProvider maxSnack={2}>
         <AuthenticationContextProvider>
-          <PostContextProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Home />}>
-                  <Route path="dashboard" element={<Dashboard />}>
-                    <Route index element={<Feed />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="chats" element={<Chats />} />
+          <LoaderContextProvider>
+            <PostContextProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Home />}>
+                    <Route path="dashboard" element={<Dashboard />}>
+                      <Route index element={<Feed />} />
+                      <Route path="profile" element={<Profile />} />
+                      <Route path="chats" element={<Chats />} />
+                      <Route path="search" element={<Search />} />
+                      <Route path="settings" element={<Settings />} />
+                    </Route>
                   </Route>
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </PostContextProvider>
+                </Routes>
+              </BrowserRouter>
+            </PostContextProvider>
+          </LoaderContextProvider>
         </AuthenticationContextProvider>
       </SnackbarProvider>
     </>

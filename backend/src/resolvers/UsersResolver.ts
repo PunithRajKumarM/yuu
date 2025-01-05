@@ -1,22 +1,31 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
 import { AppDataSource } from "../config/data-source";
 import { ErrorsList } from "../constant/ErrorsList";
 import { Users } from "../entities/Users";
+import { UserToken } from "../entities/UserToken";
 import { generateAccessRefreshToken } from "../helper/generateAccessRefreshToken";
 import { LoginInputType, UserInputType } from "../inputTypes/inputTypes";
 import {
-  GetUserResponse,
-  LoginResponse,
   DefaultResponse,
-  SaveUserResponse,
+  DefaultUserResponse,
+  GetUserResponse,
 } from "../objectTypes/objectTypes";
+import { pubSub } from "../subscription/pubSub";
+import { uploadToCloudinary } from "../helper/uploadToCloudinary";
 const bcrypt = require("bcrypt");
 
 // user resolver
 @Resolver()
 export class UsersResolver {
   // save user
-  @Mutation(() => SaveUserResponse)
+  @Mutation(() => DefaultUserResponse)
   async save_user(@Arg("user") user: UserInputType) {
     const { email, password, userName, fullName } = user;
     const userRepository = AppDataSource.getRepository(Users);
@@ -49,6 +58,8 @@ export class UsersResolver {
       });
       if (!savedUser) throw new Error(ErrorsList.FAILED_SAVING_USER);
 
+      // pubSub.publish("NEW_USER_ADDED", savedUser);
+
       const { accessToken, refreshToken } = await generateAccessRefreshToken(
         savedUser.id
       );
@@ -62,7 +73,14 @@ export class UsersResolver {
     }
   }
 
-  @Query(() => LoginResponse)
+  @Subscription(() => Users, {
+    topics: "NEW_USER_ADDED",
+  })
+  async new_user_added(@Root() users: Users) {
+    return users;
+  }
+
+  @Mutation(() => DefaultUserResponse)
   // login user
   async login(@Arg("login") login: LoginInputType) {
     const { email, password } = login;
@@ -85,8 +103,31 @@ export class UsersResolver {
         message: "Logged in",
         accessToken,
         refreshToken,
-        data: existingUser,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Mutation(() => DefaultResponse)
+  // logout
+  async logout(@Arg("id") id: string) {
+    const userRepository = AppDataSource.getRepository(Users);
+    try {
+      const existingUser = await userRepository.findOneBy({ id });
+      if (!existingUser) throw new Error(ErrorsList.USER_DOES_NOT_EXIST);
+
+      await AppDataSource.transaction(async (transactionManager) => {
+        const userTokenRepository = transactionManager.getRepository(UserToken);
+        const userToken = await userTokenRepository.findOneBy({
+          user: { id },
+        });
+        if (!userToken) throw new Error("No token found");
+
+        await userTokenRepository.delete(userToken.id);
+        await userRepository.update({ id }, { isOnline: false });
+      });
+      return { message: "Logout successfully!" };
     } catch (error) {
       throw error;
     }
@@ -112,9 +153,7 @@ export class UsersResolver {
           password: hashedPassword,
         }
       );
-      return {
-        message: "Password changed successfully!",
-      };
+      return { message: "Password changed successfully!" };
     } catch (error) {
       throw error;
     }
@@ -129,5 +168,34 @@ export class UsersResolver {
       message: "User fetched successfully!",
       user,
     };
+  }
+
+  @Query(() => [Users])
+  async get_users() {
+    const userRepository = AppDataSource.getRepository(Users);
+    try {
+      if (!userRepository) throw new Error("No user table");
+      const users = await userRepository.find();
+      return users;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Mutation(() => DefaultResponse)
+  async add_profile_picture(
+    @Arg("id") id: string,
+    @Arg("image") image: string
+  ) {
+    const userRepository = AppDataSource.getRepository(Users);
+    const user = await userRepository.findOneBy({ id });
+    try {
+      if (!user) throw new Error(ErrorsList.USER_NOT_FOUND);
+      const link = await uploadToCloudinary(image);
+      await userRepository.update({ id }, { profilePicture: link });
+      return { message: "Profile picture set successfully!" };
+    } catch (error) {
+      throw error;
+    }
   }
 }
