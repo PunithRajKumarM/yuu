@@ -116,13 +116,14 @@ function Feed() {
       <Grid2
         container
         flexDirection={'column'}
+        alignItems={'center'}
+        justifyContent={'center'}
         spacing={3}
         flex={Number(Boolean(feedsCondition))}
         sx={{
           backgroundColor: 'white',
           padding: '20px',
           borderRadius: '10px',
-          alignItems: 'center',
         }}
       >
         {handleFeedPostData()}

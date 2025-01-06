@@ -22,7 +22,8 @@ import { getPostTimeline } from '../../../helper/getPostTimeline';
 import { LIKE_POST } from '../../../queries/queries';
 import { RootState } from '../../../store/store';
 import { TRefetch, TUsersPosts } from '../../../types/types';
-import { Paper } from '@mui/material';
+import { Grid2 } from '@mui/material';
+import Post from './post/Post';
 
 interface IProps {
   posts: TUsersPosts[];
@@ -94,62 +95,39 @@ export default function Posts({ posts }: IProps) {
   }, [postTimeStatus]);
 
   return (
-    <>
+    <Grid2
+      container
+      flexDirection={'column'}
+      alignItems={'center'}
+      justifyContent={'center'}
+      flex={1}
+      spacing={3}
+      width={'auto'}
+      flexWrap={'wrap'}
+    >
       {posts &&
         posts.length &&
         posts.map((u, ui) => {
-          const { id, fullName, posts, profilePicture } = u as TUsersPosts;
+          const { posts } = u as TUsersPosts;
           if (!posts || !posts.length) return null;
           const sortedPosts = [...posts].sort(
             (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           );
           return sortedPosts.map((p, pi) => {
-            const { id: postId, link, text, createdAt, likes, comments } = p;
+            const { createdAt } = p;
             const timeAgo = postTimeStatus[createdAt] || getPostTimeline(Number(createdAt));
             return (
-              <Card key={`${ui}-${pi}`} sx={{ width: '80%' }}>
-                <CardHeader
-                  avatar={
-                    <Avatar
-                      src={profilePicture || fullName}
-                      sx={{ bgcolor: red[900] }}
-                      aria-label="post"
-                      alt={fullName}
-                    />
-                  }
-                  action={
-                    <IconButton aria-label="settings">
-                      <MoreVertIcon />
-                    </IconButton>
-                  }
-                  title={id === userId ? 'You' : fullName}
-                  subheader={timeAgo}
-                />
-                <CardContent>
-                  {text && text.length > 0 && (
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {text}
-                    </Typography>
-                  )}
-                </CardContent>
-                {link && <CardMedia component="img" image={link} alt="demo" />}
-
-                <CardActions disableSpacing>
-                  <IconButton aria-label="add to favorites" onClick={() => handleLikePost(postId)}>
-                    <FavoriteIcon
-                      sx={{
-                        color: likedPost[postId] ? 'red' : '',
-                      }}
-                    />
-                  </IconButton>
-                  <IconButton aria-label="share">
-                    <CommentIcon />
-                  </IconButton>
-                </CardActions>
-              </Card>
+              <Post
+                key={`${ui}-${pi}`}
+                userPost={u}
+                post={p}
+                timeAgo={timeAgo}
+                likedPost={likedPost}
+                handleLikePost={handleLikePost}
+              />
             );
           });
         })}
-    </>
+    </Grid2>
   );
 }

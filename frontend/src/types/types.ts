@@ -35,30 +35,32 @@ export type TGetUser = {
   };
 };
 
+export type TPosts = {
+  id: string;
+  link: string;
+  text: string;
+  createdAt: string;
+  likes: {
+    id: string;
+    user: {
+      id: string;
+    };
+  }[];
+  comments: {
+    id: string;
+    comment: string;
+    user: {
+      id: string;
+    };
+  }[];
+};
+
 export type TUsersPosts = {
   id: string;
   fullName: string;
   userName: string;
   profilePicture: string;
-  posts: {
-    id: string;
-    link: string;
-    text: string;
-    createdAt: string;
-    likes: {
-      id: string;
-      user: {
-        id: string;
-      };
-    }[];
-    comments: {
-      id: string;
-      comment: string;
-      user: {
-        id: string;
-      };
-    }[];
-  }[];
+  posts: TPosts[];
 };
 
 export type TGetUsersPosts = {

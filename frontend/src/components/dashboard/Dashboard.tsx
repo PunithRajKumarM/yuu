@@ -26,6 +26,7 @@ function Dashboard() {
           display: 'flex',
           flexDirection: 'column',
           flex: 1,
+          // minHeight: '100vh',
         }}
       >
         <Box
@@ -38,7 +39,12 @@ function Dashboard() {
           }}
         >
           <Outlet
-            context={{ refetchUserRelationships, isUsersPostsLoading, isLoggedUserDataLoading, refetchUsersPosts }}
+            context={{
+              refetchUserRelationships,
+              isUsersPostsLoading,
+              isLoggedUserDataLoading,
+              refetchUsersPosts,
+            }}
           />
         </Box>
       </Grid2>
