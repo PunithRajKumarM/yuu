@@ -21,6 +21,7 @@ import { TGetUser, TGetUsersPosts, TIDArray, TUsersPosts } from '../../types/typ
 import CreatePost from '../dashboard/createPost/CreatePost';
 import Loader from '../loader/Loader';
 import LoginSignup from '../loginSignup/LoginSignup';
+import { getImageUrl } from '../../helper/getImageUrl';
 
 // home component
 function Home() {
@@ -48,6 +49,7 @@ function Home() {
   const {
     data: loggedUserData,
     loading: isLoggedUserDataLoading,
+    refetch: refetchLoggedUserData,
     error: loggedUserDataError,
   } = useQuery(GET_USER, {
     variables: { id: userId },
@@ -121,7 +123,7 @@ function Home() {
         email: user.email,
         userName: user.userName,
         fullName: user.fullName,
-        profilePicture: user.profilePicture,
+        profilePicture: getImageUrl(user.profilePicture),
       };
       dispatch(addLoggedUserData(loggerUser));
     }
@@ -130,17 +132,17 @@ function Home() {
   useEffect(() => {
     if (usersData as IGetUsers) {
       const { get_users: users } = usersData as IGetUsers;
-      users.map((user) => {
+      const transformedUsers = users.map((user) => {
         const { id, email, userName, fullName, profilePicture } = user;
         return {
           id,
           email,
           userName,
           fullName,
-          profilePicture,
+          profilePicture: getImageUrl(profilePicture),
         };
       });
-      dispatch(addAllUsersData(users));
+      dispatch(addAllUsersData(transformedUsers));
     }
   }, [usersData]);
 
@@ -174,12 +176,12 @@ function Home() {
           id,
           fullName,
           userName,
-          profilePicture,
+          profilePicture: getImageUrl(profilePicture),
           posts: posts.map((p) => {
             const { id, link, text, createdAt, likes, comments } = p;
             return {
               id,
-              link,
+              link: getImageUrl(link),
               text,
               likes,
               comments,
@@ -211,6 +213,7 @@ function Home() {
             isUsersPostsLoading,
             isLoggedUserDataLoading,
             refetchUsersPosts,
+            refetchLoggedUserData,
           }}
         />
       )}

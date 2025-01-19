@@ -7,6 +7,7 @@ import { AppDataSource } from "./config/data-source";
 import { schemaData } from "./schema/schema";
 const express = require("express");
 const PORT = process.env.PORT;
+const bcrypt = require("bcrypt");
 
 const main = async () => {
   try {

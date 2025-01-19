@@ -93,6 +93,7 @@ function Search() {
           open={openPopupData.open}
           handleAgree={handleAgree}
           handlerDisagree={handlerDisagree}
+          agreeText="Unfollow"
         />
       )}
       <Grid2
@@ -129,13 +130,11 @@ function Search() {
               value
                 .filter((user: IUserData) => user.id !== userId)
                 .map((user: IUserData) => {
-                  const { id, fullName, userName } = user;
+                  const { id } = user;
                   return (
                     <User
                       key={id}
-                      id={id}
-                      fullName={fullName}
-                      userName={userName}
+                      user={user}
                       followings={followings}
                       followUnfollowUserHandler={followUnfollowUserHandler}
                     />

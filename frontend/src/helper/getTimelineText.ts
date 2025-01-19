@@ -1,4 +1,4 @@
-export const getPostTimeline = (timeStamp: number): string => {
+export const getTimelineText = (timeStamp: number): string => {
   const now = Date.now();
   const diffInMs = now - timeStamp;
   const diffInMins = Math.floor(diffInMs / (1000 * 60));

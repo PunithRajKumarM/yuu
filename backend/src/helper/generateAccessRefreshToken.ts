@@ -12,17 +12,17 @@ export const generateAccessRefreshToken = async (id: string) => {
     const refreshToken = jwt.sign({ id }, "your-secret-key", {
       expiresIn: "7d",
     });
-    await AppDataSource.transaction(async (transactionManager) => {
-      const userToken = new UserToken();
-      userToken.refreshToken = refreshToken;
-      const userRepository = transactionManager.getRepository(Users);
-      const user = await userRepository.findOneBy({ id });
-      if (!user) throw new Error(ErrorsList.USER_NOT_FOUND);
+    // await AppDataSource.transaction(async (transactionManager) => {
+    //   const userToken = new UserToken();
+    //   userToken.refreshToken = refreshToken;
+    //   const userRepository = transactionManager.getRepository(Users);
+    //   const user = await userRepository.findOneBy({ id });
+    //   if (!user) throw new Error(ErrorsList.USER_NOT_FOUND);
 
-      userToken.user = user;
-      const userTokenRepository = transactionManager.getRepository(UserToken);
-      await userTokenRepository.save(userToken);
-    });
+    //   userToken.user = user;
+    //   const userTokenRepository = transactionManager.getRepository(UserToken);
+    //   await userTokenRepository.save(userToken);
+    // });
 
     return { accessToken, refreshToken };
   } catch (error) {

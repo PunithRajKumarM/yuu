@@ -14,7 +14,8 @@ import { useOutletContext } from 'react-router';
 
 // profile
 function Profile() {
-  const [feedPosts, setFeedPosts] = useState<TUsersPosts[]>([]);
+  const [myPosts, setMyPosts] = useState<TUsersPosts[]>([]);
+  const [isPost, setIsPost] = useState<boolean>(false);
   const usersPostsData = useSelector((state: RootState) => state.usersPostsData);
   const { value: allPosts } = usersPostsData;
   const userId = getLoggedUserId();
@@ -23,7 +24,9 @@ function Profile() {
   useEffect(() => {
     if (userId && allPosts) {
       const loggedUserPost = allPosts.filter((user) => user.id === userId);
-      setFeedPosts(loggedUserPost);
+      const isMyPostAvailable = !!loggedUserPost.find((l) => l.posts.length);
+      setMyPosts(loggedUserPost);
+      setIsPost(isMyPostAvailable);
     }
   }, [allPosts, userId, usersPostsData]);
 
@@ -34,16 +37,17 @@ function Profile() {
         container
         flexDirection={'column'}
         spacing={3}
-        flex={1}
+        flex={Number(isPost)}
         sx={{
           backgroundColor: 'white',
           padding: '20px',
           borderRadius: '10px',
           alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         {!isUsersPostsLoading &&
-          (feedPosts.length > 0 ? <Posts posts={feedPosts} /> : <span>No post</span>)}
+          (myPosts.length && isPost ? <Posts posts={myPosts} /> : <span>No post</span>)}
       </Grid2>
     </Grid2>
   );

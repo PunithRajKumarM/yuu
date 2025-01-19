@@ -1,28 +1,15 @@
-import CommentIcon from '@mui/icons-material/Comment';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Avatar from '@mui/material/Avatar';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-
 import { useMutation } from '@apollo/client';
+import { Grid2 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useOutletContext } from 'react-router';
 import { nextUpdateTime } from '../../../helper/getGreeting';
 import { getLoggedUserId } from '../../../helper/getLoggedUserId';
-import { getPostTimeline } from '../../../helper/getPostTimeline';
+import { getTimelineText } from '../../../helper/getTimelineText';
 import { LIKE_POST } from '../../../queries/queries';
 import { RootState } from '../../../store/store';
-import { TRefetch, TUsersPosts } from '../../../types/types';
-import { Grid2 } from '@mui/material';
+import { TRefetch, TSortedPosts, TUsersPosts } from '../../../types/types';
 import Post from './post/Post';
 
 interface IProps {
@@ -35,6 +22,7 @@ export default function Posts({ posts }: IProps) {
   const { refetchUsersPosts }: { refetchUsersPosts: TRefetch } = useOutletContext();
   const [postTimeStatus, setPostTimeStatus] = useState<{ [key: string]: string }>({});
   const [likedPost, setLikedPost] = useState<{ [key: string]: boolean }>({});
+  const [sortedPost, setSortedPost] = useState<TSortedPosts[]>([]);
 
   const userId = getLoggedUserId();
   const { value: postStateValue } = useSelector((state: RootState) => state.usersPostsData);
@@ -85,7 +73,7 @@ export default function Posts({ posts }: IProps) {
       setPostTimeStatus((previousPostTime) => {
         const updatedPostTimes = { ...previousPostTime };
         Object.keys(previousPostTime).forEach((key) => {
-          updatedPostTimes[key] = getPostTimeline(Number(key));
+          updatedPostTimes[key] = getTimelineText(Number(key));
         });
         return updatedPostTimes;
       });
@@ -93,6 +81,29 @@ export default function Posts({ posts }: IProps) {
 
     return () => clearInterval(interval);
   }, [postTimeStatus]);
+
+  useEffect(() => {
+    if (posts && posts.length) {
+      const combinedPost: TSortedPosts[] = [];
+      posts.forEach((user) => {
+        user.posts.forEach((post) => {
+          combinedPost.push({
+            id: user.id,
+            fullName: user.fullName,
+            profilePicture: user.profilePicture,
+            postId: post.id,
+            link: post.link,
+            text: post.text,
+            createdAt: post.createdAt,
+            likes: post.likes,
+            comments: post.comments,
+          });
+        });
+      });
+      combinedPost.sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
+      setSortedPost(combinedPost);
+    }
+  }, [posts]);
 
   return (
     <Grid2
@@ -105,29 +116,17 @@ export default function Posts({ posts }: IProps) {
       width={'auto'}
       flexWrap={'wrap'}
     >
-      {posts &&
-        posts.length &&
-        posts.map((u, ui) => {
-          const { posts } = u as TUsersPosts;
-          if (!posts || !posts.length) return null;
-          const sortedPosts = [...posts].sort(
-            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
-          return sortedPosts.map((p, pi) => {
-            const { createdAt } = p;
-            const timeAgo = postTimeStatus[createdAt] || getPostTimeline(Number(createdAt));
-            return (
-              <Post
-                key={`${ui}-${pi}`}
-                userPost={u}
-                post={p}
-                timeAgo={timeAgo}
-                likedPost={likedPost}
-                handleLikePost={handleLikePost}
-              />
-            );
-          });
-        })}
+      {sortedPost.map((post, pi) => {
+        return (
+          <Post
+            key={pi}
+            post={post}
+            postTimeStatus={postTimeStatus}
+            likedPost={likedPost}
+            handleLikePost={handleLikePost}
+          />
+        );
+      })}
     </Grid2>
   );
 }

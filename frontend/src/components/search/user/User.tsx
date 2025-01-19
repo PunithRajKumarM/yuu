@@ -1,20 +1,19 @@
 import { Avatar, Button, Grid2 } from '@mui/material';
 import React from 'react';
 import { TIDArray } from '../../../types/types';
+import { IUserData } from '../../../interfaces/interfaces';
 
 function User({
-  id,
-  fullName,
-  userName,
+  user,
   followings,
   followUnfollowUserHandler,
 }: {
-  id: string;
-  fullName: string;
-  userName: string;
+  user: IUserData;
+
   followings: TIDArray;
   followUnfollowUserHandler: (selectedId: string, fullName: string) => void;
 }) {
+  const { id, fullName, userName, profilePicture } = user;
   return (
     <Grid2
       container
@@ -32,7 +31,11 @@ function User({
         backgroundColor: '#f9f9f9',
       }}
     >
-      <Avatar src="j" alt={fullName} sx={{ width: '50px', height: '50px' }} />
+      <Avatar
+        src={profilePicture || fullName}
+        alt={fullName}
+        sx={{ width: '50px', height: '50px' }}
+      />
       <div
         style={{
           textAlign: 'center',

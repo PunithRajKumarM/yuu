@@ -9,22 +9,22 @@ export function decodeToken(token: string) {
 }
 
 export function setEncodedAccessTokenToLocal(accessToken: string) {
-  return localStorage.setItem('accessToken', encodeToken(accessToken));
+  return sessionStorage.setItem('accessToken', encodeToken(accessToken));
 }
 
 export function setEncodedRefreshTokenToLocal(refreshToken: string) {
-  return localStorage.setItem('refreshToken', encodeToken(refreshToken));
+  return sessionStorage.setItem('refreshToken', encodeToken(refreshToken));
 }
 
 export function getDecodedAccessTokenToLocal() {
-  return decodeToken(localStorage.getItem('accessToken') || '');
+  return decodeToken(sessionStorage.getItem('accessToken') || '');
 }
 
 export function getDecodedRefreshTokenToLocal() {
-  return decodeToken(localStorage.getItem('refreshToken') || '');
+  return decodeToken(sessionStorage.getItem('refreshToken') || '');
 }
 
 export function clearToken() {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
+  sessionStorage.removeItem('accessToken');
+  sessionStorage.removeItem('refreshToken');
 }

@@ -101,6 +101,7 @@ export const GET_USERS_POSTS = gql`
             user {
               id
             }
+            createdAt
           }
         }
       }
@@ -154,6 +155,14 @@ export const ADD_PROFILE_PICTURE = gql`
 export const LIKE_POST = gql`
   mutation likePost($id: String!, $postId: String!) {
     like_post(id: $id, postId: $postId) {
+      message
+    }
+  }
+`;
+
+export const ADD_COMMENT = gql`
+  mutation addComment($postId: String!, $userId: String!, $comment: String!) {
+    add_comment(postId: $postId, userId: $userId, comment: $comment) {
       message
     }
   }

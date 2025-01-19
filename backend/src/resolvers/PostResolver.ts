@@ -24,7 +24,8 @@ export class PostResolver {
         try {
           let link = "";
           if (image) {
-            link = await uploadToCloudinary(image);
+            const cloudinaryUrl = await uploadToCloudinary(image);
+            link = cloudinaryUrl.split("/upload/")[1];
           }
           const newPost = new Posts();
           newPost.text = text || "";
@@ -56,7 +57,7 @@ export class PostResolver {
           "posts.likes.user",
           "posts.comments",
           "posts.comments.user",
-        ]
+        ],
       });
       users.forEach((user) => {
         user.posts.sort((a, b) => {

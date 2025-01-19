@@ -37,7 +37,7 @@ export class UserRelationshipResolver {
         following,
       });
 
-      return { message: "Unfollowed user successfully" };
+      return { message: `Unfollowed ${following.fullName}` };
     }
     const newRelationShip = relationshipRepository.create({
       follower,
@@ -45,7 +45,7 @@ export class UserRelationshipResolver {
     });
 
     await relationshipRepository.save(newRelationShip);
-    return { message: "User following successfully" };
+    return { message: `Following ${following.fullName}` };
   }
 
   @Query(() => GetUserRelationshipsResponse)

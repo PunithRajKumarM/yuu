@@ -16,7 +16,7 @@ import Settings from './components/settings/Settings';
 function App() {
   return (
     <>
-      <SnackbarProvider maxSnack={2}>
+      <SnackbarProvider maxSnack={1}>
         <AuthenticationContextProvider>
           <LoaderContextProvider>
             <PostContextProvider>

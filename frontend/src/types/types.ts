@@ -35,24 +35,29 @@ export type TGetUser = {
   };
 };
 
+export type TComments = {
+  id: string;
+  comment: string;
+  user: {
+    id: string;
+  };
+  createdAt: string;
+};
+
+export type TLikes = {
+  id: string;
+  user: {
+    id: string;
+  };
+};
+
 export type TPosts = {
   id: string;
   link: string;
   text: string;
   createdAt: string;
-  likes: {
-    id: string;
-    user: {
-      id: string;
-    };
-  }[];
-  comments: {
-    id: string;
-    comment: string;
-    user: {
-      id: string;
-    };
-  }[];
+  likes: TLikes[];
+  comments: TComments[];
 };
 
 export type TUsersPosts = {
@@ -74,3 +79,15 @@ export type TRefetch = (
 ) => Promise<ApolloQueryResult<any>>;
 
 export type TSelectImage = React.Dispatch<React.SetStateAction<string | ArrayBuffer | null>>;
+
+export type TSortedPosts = {
+  id: string;
+  fullName: string;
+  profilePicture: string;
+  postId: string;
+  link: string;
+  text: string;
+  createdAt: string;
+  likes: TLikes[];
+  comments: TComments[];
+};

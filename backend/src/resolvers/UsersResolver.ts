@@ -21,6 +21,10 @@ import { pubSub } from "../subscription/pubSub";
 import { uploadToCloudinary } from "../helper/uploadToCloudinary";
 const bcrypt = require("bcrypt");
 
+const CLOUD_NAME = process.env.CLOUD_NAME;
+const CLOUDINARY_BASE_URL = process.env.CLOUDINARY_BASE_URL;
+const CLOUDINARY_IMAGE_PATH = process.env.CLOUDINARY_IMAGE_PATH;
+
 // user resolver
 @Resolver()
 export class UsersResolver {
@@ -117,16 +121,16 @@ export class UsersResolver {
       const existingUser = await userRepository.findOneBy({ id });
       if (!existingUser) throw new Error(ErrorsList.USER_DOES_NOT_EXIST);
 
-      await AppDataSource.transaction(async (transactionManager) => {
-        const userTokenRepository = transactionManager.getRepository(UserToken);
-        const userToken = await userTokenRepository.findOneBy({
-          user: { id },
-        });
-        if (!userToken) throw new Error("No token found");
+      // await AppDataSource.transaction(async (transactionManager) => {
+      //   const userTokenRepository = transactionManager.getRepository(UserToken);
+      //   const userToken = await userTokenRepository.findOneBy({
+      //     user: { id },
+      //   });
+      //   if (!userToken) throw new Error("No token found");
 
-        await userTokenRepository.delete(userToken.id);
-        await userRepository.update({ id }, { isOnline: false });
-      });
+      //   await userTokenRepository.delete(userToken.id);
+      //   await userRepository.update({ id }, { isOnline: false });
+      // });
       return { message: "Logout successfully!" };
     } catch (error) {
       throw error;
@@ -191,7 +195,9 @@ export class UsersResolver {
     const user = await userRepository.findOneBy({ id });
     try {
       if (!user) throw new Error(ErrorsList.USER_NOT_FOUND);
-      const link = await uploadToCloudinary(image);
+      const cloudinaryUrl = await uploadToCloudinary(image);
+      const link = cloudinaryUrl.split("/upload/")[1];
+
       await userRepository.update({ id }, { profilePicture: link });
       return { message: "Profile picture set successfully!" };
     } catch (error) {

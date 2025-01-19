@@ -1,6 +1,5 @@
 import { Box, Grid2 } from '@mui/material';
 import { Outlet, useOutletContext } from 'react-router';
-import './Dashboard.css';
 import SideBar from './sideBar/SideBar';
 import { TRefetch } from '../../types/types';
 
@@ -11,11 +10,13 @@ function Dashboard() {
     isUsersPostsLoading,
     isLoggedUserDataLoading,
     refetchUsersPosts,
+    refetchLoggedUserData,
   }: {
     refetchUserRelationships: TRefetch;
     isUsersPostsLoading: boolean;
     isLoggedUserDataLoading: boolean;
     refetchUsersPosts: TRefetch;
+    refetchLoggedUserData: TRefetch;
   } = useOutletContext();
   return (
     <Grid2 container>
@@ -44,6 +45,7 @@ function Dashboard() {
               isUsersPostsLoading,
               isLoggedUserDataLoading,
               refetchUsersPosts,
+              refetchLoggedUserData,
             }}
           />
         </Box>
