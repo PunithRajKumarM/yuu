@@ -1,5 +1,3 @@
-import CommentIcon from '@mui/icons-material/Comment';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   Avatar,
@@ -12,10 +10,12 @@ import {
   Typography,
 } from '@mui/material';
 import { red } from '@mui/material/colors';
+import { useState } from 'react';
+import { IoMdFlame } from 'react-icons/io';
+import { TbMessageCircleFilled } from 'react-icons/tb';
 import { getLoggedUserId } from '../../../../helper/getLoggedUserId';
 import { getTimelineText } from '../../../../helper/getTimelineText';
 import { TSortedPosts } from '../../../../types/types';
-import { useState } from 'react';
 import CommentSection from './commentSection/CommentSection';
 
 interface PostProps {
@@ -58,8 +58,8 @@ function Post({ post, postTimeStatus, likedPost, handleLikePost }: PostProps) {
           subheader={timeAgo}
         />
         {text && text.length > 0 && (
-          <CardContent>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <CardContent sx={{ p: '4px 16px' }}>
+            <Typography variant="body2" sx={{ color: 'var(--main-color)' }}>
               {text}
             </Typography>
           </CardContent>
@@ -84,19 +84,22 @@ function Post({ post, postTimeStatus, likedPost, handleLikePost }: PostProps) {
           }}
         >
           <IconButton aria-label="add to favorites" onClick={() => handleLikePost(postId)}>
-            <FavoriteIcon
-              sx={{
-                color: likedPost[postId] ? 'red' : '',
+            <IoMdFlame
+              style={{
+                color: likedPost[postId] ? (likes.length > 100 ? 'blue' : 'orange') : '',
               }}
             />
           </IconButton>
           <IconButton aria-label="share" onClick={() => setIsCommentOpen(true)}>
-            <CommentIcon />
+            <TbMessageCircleFilled />
           </IconButton>
         </CardActions>
         {likes.length > 0 && (
-          <Typography sx={{ padding: '0px 16px 8px 16px', color: 'rgba(0, 0, 0, 0.6)' }}>
-            {likes.length} {likes.length > 1 ? 'likes' : 'like'}
+          <Typography
+            sx={{ padding: '0px 16px 8px 16px', color: 'rgba(0, 0, 0, 0.6)', fontSize: '12px' }}
+          >
+            {likes.length} {likes.length > 1 ? 'likes' : 'like'}{' '}
+            {comments.length > 0 ? `and ${comments.length} comments` : ''}
           </Typography>
         )}
       </Card>

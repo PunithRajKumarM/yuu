@@ -19,7 +19,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { TransitionProps } from '@mui/material/transitions';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
-import React, { forwardRef, useContext, useState } from 'react';
+import React, { forwardRef, useContext, useEffect, useState } from 'react';
 import { LoaderContext } from '../../../../../context/LoaderContext';
 import { getLoggedUserId } from '../../../../../helper/getLoggedUserId';
 import { getTimelineText } from '../../../../../helper/getTimelineText';
@@ -27,6 +27,9 @@ import { ADD_COMMENT } from '../../../../../queries/queries';
 import { TRefetch, TSortedPosts } from '../../../../../types/types';
 import Loader from '../../../../loader/Loader';
 import { useOutletContext } from 'react-router';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../store/store';
+import { IUserData } from '../../../../../interfaces/interfaces';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -49,6 +52,8 @@ export default function CommentSection({ open, setOpen, post }: CommentSectionPr
   const userId = getLoggedUserId();
   const { postId, comments, profilePicture, fullName } = post;
   const { refetchUsersPosts }: { refetchUsersPosts: TRefetch } = useOutletContext();
+  const allUsersData = useSelector((state: RootState) => state.allUsersData);
+  const { value } = allUsersData;
 
   const [addComment] = useMutation(ADD_COMMENT, {
     onCompleted: () => {
@@ -122,32 +127,37 @@ export default function CommentSection({ open, setOpen, post }: CommentSectionPr
       >
         {comments.length > 0 ? (
           <>
-            {comments.map((c) => (
-              <Box key={c.id}>
-                <Grid2 container alignItems={'center'} spacing={2} p={1}>
-                  <Avatar
-                    src={profilePicture || fullName}
-                    sx={{ width: '30px', height: '30px' }}
-                    aria-label="post"
-                    alt={fullName}
-                  />
-                  <Grid2 container flexDirection={'column'} spacing={0}>
-                    <Box>
-                      <strong>
-                        <span>{fullName}</span>
-                      </strong>
-                      <small style={{ marginLeft: '8px' }}>
-                        <span>{getTimelineText(Number(c.createdAt))}</span>
-                      </small>
-                    </Box>
-                    <Box>
-                      <span>{c.comment}</span>
-                    </Box>
+            {comments.map((c) => {
+              const commentedUser = value?.find((u) => u.id === c.user.id);
+
+              return (
+                <Box key={c.id} sx={{
+                  boxShadow: '1px 0 0 black'
+                }}>
+                  <Grid2 container alignItems={'center'} spacing={2} p={1}>
+                    <Avatar
+                      src={commentedUser?.profilePicture || commentedUser?.fullName}
+                      sx={{ width: '30px', height: '30px' }}
+                      aria-label="post"
+                      alt={commentedUser?.fullName}
+                    />
+                    <Grid2 container flexDirection={'column'} spacing={0}>
+                      <Box>
+                        <strong>
+                          <span>{commentedUser?.fullName}</span>
+                        </strong>
+                        <small style={{ marginLeft: '8px' }}>
+                          <span>{getTimelineText(Number(c.createdAt))}</span>
+                        </small>
+                      </Box>
+                      <Box>
+                        <span>{c.comment}</span>
+                      </Box>
+                    </Grid2>
                   </Grid2>
-                </Grid2>
-                <hr />
-              </Box>
-            ))}
+                </Box>
+              );
+            })}
           </>
         ) : (
           <span style={{ color: 'var(--main-color)', textAlign: 'center', padding: '10px' }}>

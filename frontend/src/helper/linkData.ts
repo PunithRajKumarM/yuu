@@ -16,7 +16,7 @@ export const linkData = [
     link: 'profile',
   },
   {
-    label: 'Create post',
+    label: 'Create',
     link: '',
     post: true,
   },

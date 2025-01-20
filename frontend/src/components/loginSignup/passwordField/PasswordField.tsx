@@ -20,6 +20,9 @@ function PasswordField({
   error,
   passwordOnBlurHandler,
   helperText,
+  forgotPassword,
+  forgotPasswordHandler,
+  LoginSignupSubmitHandler,
 }: PasswordProps) {
   return (
     <FormControl variant="outlined" fullWidth>
@@ -38,6 +41,11 @@ function PasswordField({
         id="password"
         type={showPassword ? 'text' : 'password'}
         value={value.trim()}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            forgotPassword ? forgotPasswordHandler() : LoginSignupSubmitHandler();
+          }
+        }}
         onChange={(e) => passwordHandler(e.target.value)}
         onBlur={passwordOnBlurHandler}
         inputRef={inputRef}

@@ -21,6 +21,9 @@ export interface EmailProps {
   error: boolean;
   emailOnBlurHandler: () => void;
   helperText: string;
+  forgotPassword: boolean;
+  forgotPasswordHandler: () => void;
+  LoginSignupSubmitHandler: () => void;
 }
 
 export interface PasswordProps {
@@ -33,6 +36,9 @@ export interface PasswordProps {
   error: boolean;
   passwordOnBlurHandler: () => void;
   helperText: string;
+  forgotPassword: boolean;
+  forgotPasswordHandler: () => void;
+  LoginSignupSubmitHandler: () => void;
 }
 
 export interface IAuthenticationContext {

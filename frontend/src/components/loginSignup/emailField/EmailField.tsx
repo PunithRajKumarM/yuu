@@ -10,6 +10,9 @@ function EmailField({
   error,
   emailOnBlurHandler,
   helperText,
+  forgotPassword,
+  forgotPasswordHandler,
+  LoginSignupSubmitHandler,
 }: EmailProps) {
   return (
     <div className="email-field-wrapper">
@@ -20,6 +23,11 @@ function EmailField({
         label="Email"
         value={email}
         error={error}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            forgotPassword ? forgotPasswordHandler() : LoginSignupSubmitHandler();
+          }
+        }}
         onChange={(e) =>
           setEmail((pre) => ({
             ...pre,

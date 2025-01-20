@@ -373,6 +373,7 @@ function LoginSignupForm() {
           {' '}
           {forgotPassword ? 'Reset password' : authTypeName}
         </h1>
+
         <EmailField
           email={emailState.value}
           inputRef={emailRef}
@@ -380,6 +381,9 @@ function LoginSignupForm() {
           error={emailState.error}
           helperText={emailState.helperText}
           emailOnBlurHandler={emailOnBlurHandler}
+          forgotPassword={forgotPassword}
+          forgotPasswordHandler={forgotPasswordHandler}
+          LoginSignupSubmitHandler={LoginSignupSubmitHandler}
         />
         {authType === 'signup' && (
           <NameField
@@ -390,6 +394,7 @@ function LoginSignupForm() {
             helperText={fullNameState.helperText}
             label="Full name"
             placeholder="Enter your full name"
+            LoginSignupSubmitHandler={LoginSignupSubmitHandler}
           />
         )}
         {authType === 'signup' && (
@@ -401,6 +406,7 @@ function LoginSignupForm() {
             helperText={userNameState.helperText}
             label="User name"
             placeholder="Create user name"
+            LoginSignupSubmitHandler={LoginSignupSubmitHandler}
           />
         )}
         <PasswordField
@@ -413,6 +419,9 @@ function LoginSignupForm() {
           error={passwordState.error}
           helperText={passwordState.helperText}
           passwordOnBlurHandler={passwordOnBlurHandler}
+          forgotPassword={forgotPassword}
+          forgotPasswordHandler={forgotPasswordHandler}
+          LoginSignupSubmitHandler={LoginSignupSubmitHandler}
         />
         {(authType === 'signup' || forgotPassword) && (
           <PasswordField
@@ -425,6 +434,9 @@ function LoginSignupForm() {
             error={confirmPasswordState.error}
             helperText={confirmPasswordState.helperText}
             passwordOnBlurHandler={confirmPasswordOnBlurHandler}
+            forgotPassword={forgotPassword}
+            forgotPasswordHandler={forgotPasswordHandler}
+            LoginSignupSubmitHandler={LoginSignupSubmitHandler}
           />
         )}
         {error.status && (

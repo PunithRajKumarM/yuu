@@ -1,6 +1,5 @@
 import { ApolloQueryResult, OperationVariables, useMutation } from '@apollo/client';
 import CloseIcon from '@mui/icons-material/Close';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {
   AppBar,
   Box,
@@ -16,13 +15,14 @@ import {
 import { TransitionProps } from '@mui/material/transitions';
 import { useSnackbar } from 'notistack';
 import React, { forwardRef, useContext, useState } from 'react';
+import { MdFileUpload } from 'react-icons/md';
+import { LoaderContext } from '../../../context/LoaderContext';
 import { PostContext } from '../../../context/PostContext';
 import { ErrorsList } from '../../../helper/ErrorsLists';
 import { getLoggedUserId } from '../../../helper/getLoggedUserId';
-import { SAVE_POST } from '../../../queries/queries';
-import { LoaderContext } from '../../../context/LoaderContext';
-import Loader from '../../loader/Loader';
 import { handleImageSelection } from '../../../helper/handleImageSelection';
+import { SAVE_POST } from '../../../queries/queries';
+import Loader from '../../loader/Loader';
 
 export interface ICreatePostProps {
   refetchUsersPosts: (
@@ -132,7 +132,7 @@ function CreatePost({ refetchUsersPosts }: ICreatePostProps) {
           role={undefined}
           variant="contained"
           tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
+          startIcon={<MdFileUpload />}
           sx={{
             mr: 'auto',
             backgroundColor: 'var(--main-color)',

@@ -11,6 +11,7 @@ export interface INameField {
   label: string;
   placeholder: string;
   nameOnBlurHandler?: () => void;
+  LoginSignupSubmitHandler: () => void;
 }
 
 // name field component
@@ -23,6 +24,7 @@ function NameField({
   label,
   placeholder,
   nameOnBlurHandler,
+  LoginSignupSubmitHandler,
 }: INameField) {
   return (
     <div className="name-field-wrapper">
@@ -30,6 +32,9 @@ function NameField({
         id="standard-basic"
         variant="outlined"
         value={label === 'User name' ? value.trim() : value}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') LoginSignupSubmitHandler();
+        }}
         onBlur={nameOnBlurHandler}
         type="text"
         sx={{
